@@ -1,4 +1,4 @@
-﻿#region Imports (14)
+﻿#region Imports (12)
 
 using System;
 using System.Collections.Generic;
@@ -13,10 +13,12 @@ using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 using YamlDotNet.RepresentationModel.Serialization;
 
-#endregion Imports (14)
+#endregion Imports (12)
 
 namespace Minova.ClientApi
 {
+
+
     internal class Distribution
     {
         #region Properties of Distribution (3)
@@ -41,12 +43,7 @@ namespace Minova.ClientApi
 
         #endregion Constructors of Distribution (1)
 
-        #region Methods of Distribution (1)
-
-        internal Uri GetUri(string relativePath)
-        {
-            return new Uri(DistributionUrl, relativePath);
-        }
+        #region Methods of Distribution (2)
 
         public DistributionPackageList GetAvailablePackages(string since)
         {
@@ -64,7 +61,12 @@ namespace Minova.ClientApi
             return ret;
         }
 
-        #endregion Methods of Distribution (1)
+        internal Uri GetUri(string relativePath)
+        {
+            return new Uri(DistributionUrl, relativePath);
+        }
+
+        #endregion Methods of Distribution (2)
     }
 
     public class DistributionPackageList : List<DistributionPackageListEntry>
@@ -73,13 +75,19 @@ namespace Minova.ClientApi
 
     public class DistributionPackageListEntry
     {
+        #region Properties of DistributionPackageListEntry (2)
+
         public string CurrentVersion { get; internal set; }
 
         public PackageMetadata Metadata { get; internal set; }
+
+        #endregion Properties of DistributionPackageListEntry (2)
     }
 
     public class PackageMetadata
     {
+        #region Properties of PackageMetadata (10)
+
         public string[] Dependencies { get; private set; }
 
         public string Description { get; private set; }
@@ -101,6 +109,8 @@ namespace Minova.ClientApi
         public string Name { get; private set; }
 
         public bool PlatformDependence { get; private set; }
+
+        #endregion Properties of PackageMetadata (10)
     }
 
     internal class Repository
