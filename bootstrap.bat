@@ -24,7 +24,7 @@ if %errorlevel% neq 0 goto E_EXIT
 ::call check-hg     
 ::if %errorlevel% neq 0 goto E_EXIT 
 
-call init-svn https://yaml.svn.codeplex.com/svn/Main/Core/ source/dependencies/Yaml.Core
+call init-svn https://yaml.svn.codeplex.com/svn/Main/ source/dependencies/yaml
 call init-svn http://luainterface.googlecode.com/svn/trunk/ source/dependencies/luainterface
 call init-nuget
 
