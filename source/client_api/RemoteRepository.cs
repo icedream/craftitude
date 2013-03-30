@@ -8,131 +8,155 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
-using YamlDotNet;
-using YamlDotNet.Core;
-using YamlDotNet.RepresentationModel;
-using YamlDotNet.RepresentationModel.Serialization;
+using YaTools.Yaml;
+using YaTools.Yaml.AbstractContracts;
+using LuaInterface;
 
 #endregion Imports (12)
 
-namespace Minova.ClientApi
+namespace Craftitude.ClientApi
 {
 
 
-    internal class Distribution
-    {
-        #region Properties of Distribution (3)
+	internal class Distribution
+	{
+		#region Properties of Distribution (3)
 
-        public string DistributionID { get; private set; }
+		public string DistributionID { get; private set; }
 
-        internal Uri DistributionUrl { get { return Repository.GetUri(string.Format("{0}/", DistributionID)); } }
+		internal Uri DistributionUrl { get { return Repository.GetUri(string.Format("{0}/", DistributionID)); } }
 
-        internal Repository Repository { get; private set; }
+		internal Repository Repository { get; private set; }
 
-        #endregion Properties of Distribution (3)
+		#endregion Properties of Distribution (3)
 
-        #region Constructors of Distribution (1)
+		#region Constructors of Distribution (1)
 
-        public Distribution(Repository parentRepository, string distributionName)
-        {
-            Repository = parentRepository;
-            DistributionID = distributionName;
+		public Distribution(Repository parentRepository, string distributionName)
+		{
+			Repository = parentRepository;
+			DistributionID = distributionName;
 
-            // TODO: Repository validation with exception on fail
-        }
+			// TODO: Repository validation with exception on fail
+		}
 
-        #endregion Constructors of Distribution (1)
+		#endregion Constructors of Distribution (1)
 
-        #region Methods of Distribution (2)
+		#region Methods of Distribution (2)
 
-        public DistributionPackageList GetAvailablePackages(string since)
-        {
-            YamlSerializer s = new YamlSerializer(typeof(DistributionPackageList));
-            HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(GetUri("packages.yml?since=" + since));
-            var wresp = wr.GetResponse();
-            DistributionPackageList ret = null;
-            using (var ws = wresp.GetResponseStream())
-            {
-                using (var wsr = new StreamReader(ws))
-                {
-                    ret = (DistributionPackageList)s.Deserialize(wsr);
-                }
-            }
-            return ret;
-        }
+		public DistributionPackageList GetAvailablePackages(string since)
+		{
+			HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(GetUri("packages.yml?since=" + since));
+			var wresp = wr.GetResponse();
+			DistributionPackageList ret = null;
+			using (var ws = wresp.GetResponseStream())
+			{
+				using (var wsr = new StreamReader(ws))
+				{
+					var yaml = new YamlStream();
+					yaml.Load(wsr);
 
-        internal Uri GetUri(string relativePath)
-        {
-            return new Uri(DistributionUrl, relativePath);
-        }
+					var yamlPackageList = (YamlMappingNode)yaml.Documents[0].RootNode;
 
-        #endregion Methods of Distribution (2)
-    }
+					foreach(var yamlPackageEntry in yamlPackageList.Children)
+					{
+						switch(yamlPackageEntry.Key)
+						{
+							case "
+						}
+						// List all the items
+						var items = (YamlSequenceNode)mapping.Children[new YamlScalarNode("items")];
+						foreach (YamlMappingNode item in items)
+						{
+							Console.WriteLine(
+								"{0}\t{1}",
+								item.Children[new YamlScalarNode("part_no")],
+								item.Children[new YamlScalarNode("descrip")]
+							);
+						}
+					}
 
-    public class DistributionPackageList : List<DistributionPackageListEntry>
-    {
-    }
+				}
+			}
+			foreach (var packagenode in doc.AllNodes)
+			{
+				packagenode.
+			}
+			return ret;
+		}
 
-    public class DistributionPackageListEntry
-    {
-        #region Properties of DistributionPackageListEntry (2)
+		internal Uri GetUri(string relativePath)
+		{
+			return new Uri(DistributionUrl, relativePath);
+		}
 
-        public string CurrentVersion { get; internal set; }
+		#endregion Methods of Distribution (2)
+	}
 
-        public PackageMetadata Metadata { get; internal set; }
+	public class DistributionPackageList : List<DistributionPackageListEntry>
+	{
+	}
 
-        #endregion Properties of DistributionPackageListEntry (2)
-    }
+	public class DistributionPackageListEntry
+	{
+		#region Properties of DistributionPackageListEntry (2)
 
-    public class PackageMetadata
-    {
-        #region Properties of PackageMetadata (10)
+		public string CurrentVersion { get; internal set; }
 
-        public string[] Dependencies { get; private set; }
+		public PackageMetadata Metadata { get; internal set; }
 
-        public string Description { get; private set; }
+		#endregion Properties of DistributionPackageListEntry (2)
+	}
 
-        public string[] Developers { get; private set; }
+	public class PackageMetadata
+	{
+		#region Properties of PackageMetadata (10)
 
-        public string ID { get; internal set; }
+		public string[] Dependencies { get; private set; }
 
-        public string License { get; private set; }
+		public string Description { get; private set; }
 
-        [YamlIgnore()]
-        public string LicenseNameOrText { get { return string.Join("; ", License.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries).Where(licenseEntry => !Uri.IsWellFormedUriString(licenseEntry, UriKind.Absolute))); } }
+		public string[] Developers { get; private set; }
 
-        [YamlIgnore()]
-        public string LicenseUrl { get { return License.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries).SingleOrDefault(licenseEntry => Uri.IsWellFormedUriString(licenseEntry, UriKind.Absolute)); } }
+		public string ID { get; internal set; }
 
-        public string[] Maintainers { get; private set; }
+		public string License { get; private set; }
 
-        public string Name { get; private set; }
+		[YamlIgnore()]
+		public string LicenseNameOrText { get { return string.Join("; ", License.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries).Where(licenseEntry => !Uri.IsWellFormedUriString(licenseEntry, UriKind.Absolute))); } }
 
-        public bool PlatformDependence { get; private set; }
+		[YamlIgnore()]
+		public string LicenseUrl { get { return License.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries).SingleOrDefault(licenseEntry => Uri.IsWellFormedUriString(licenseEntry, UriKind.Absolute)); } }
 
-        #endregion Properties of PackageMetadata (10)
-    }
+		public string[] Maintainers { get; private set; }
 
-    internal class Repository
-    {
-        #region Properties of Repository (1)
+		public string Name { get; private set; }
 
-        public Uri RepositoryUrl { get; private set; }
+		public bool PlatformDependence { get; private set; }
 
-        #endregion Properties of Repository (1)
+		#endregion Properties of PackageMetadata (10)
+	}
 
-        #region Methods of Repository (2)
+	internal class Repository
+	{
+		#region Properties of Repository (1)
 
-        public Distribution GetDistribution(string dist)
-        {
-            return new Distribution(this, dist);
-        }
+		public Uri RepositoryUrl { get; private set; }
 
-        internal Uri GetUri(string relativePath)
-        {
-            return new Uri(RepositoryUrl, relativePath);
-        }
+		#endregion Properties of Repository (1)
 
-        #endregion Methods of Repository (2)
-    }
+		#region Methods of Repository (2)
+
+		public Distribution GetDistribution(string dist)
+		{
+			return new Distribution(this, dist);
+		}
+
+		internal Uri GetUri(string relativePath)
+		{
+			return new Uri(RepositoryUrl, relativePath);
+		}
+
+		#endregion Methods of Repository (2)
+	}
 }

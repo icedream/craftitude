@@ -8,28 +8,28 @@ using System.Text;
 
 #endregion Imports (5)
 
-namespace Minova.ClientApi
+namespace Craftitude.ClientApi
 {
 
 
-    public class MinovaClient
+    public class CraftitudeClient
     {
-        #region Enums of MinovaClient (2)
+        #region Enums of CraftitudeClient (2)
 
         private List<string> _repositories = new List<string>(new[] {
-            "http://repo.minova.tk/minecraft/",
-            "http://repo.minova.tk/libraries/",
-            "http://repo.minova.tk/mods/"
+            "http://repo.craftitude.tk/minecraft/",
+            "http://repo.craftitude.tk/libraries/",
+            "http://repo.craftitude.tk/mods/"
         });
         private string _targetDirectory = Environment.CurrentDirectory;
 
-        #endregion Enums of MinovaClient (2)
+        #endregion Enums of CraftitudeClient (2)
 
-        #region Properties of MinovaClient (7)
+        #region Properties of CraftitudeClient (7)
 
-        internal DirectoryInfo MinovaDirectoryInfo { get; private set; }
+        internal DirectoryInfo CraftitudeDirectoryInfo { get; private set; }
 
-        internal string MinovaRepositoriesListFilePath { get { return Path.Combine(MinovaDirectoryInfo.FullName, "repositories.list"); } }
+        internal string CraftitudeRepositoriesListFilePath { get { return Path.Combine(CraftitudeDirectoryInfo.FullName, "repositories.list"); } }
 
         public List<string> Repositories { get { return _repositories; } }
 
@@ -41,14 +41,14 @@ namespace Minova.ClientApi
 
         internal DirectoryInfo TargetDirectoryInfo { get { return new DirectoryInfo(_targetDirectory); } }
 
-        #endregion Properties of MinovaClient (7)
+        #endregion Properties of CraftitudeClient (7)
 
-        #region Methods of MinovaClient (4)
+        #region Methods of CraftitudeClient (4)
 
         private void _internalTargetInit()
         {
-            MinovaDirectoryInfo = TargetDirectoryInfo.CreateSubdirectory("minova");
-            if (!File.Exists(MinovaRepositoriesListFilePath))
+            CraftitudeDirectoryInfo = TargetDirectoryInfo.CreateSubdirectory("Craftitude");
+            if (!File.Exists(CraftitudeRepositoriesListFilePath))
                 _saveRepositoriesList();
             else
                 _loadRepositoriesList();
@@ -57,12 +57,12 @@ namespace Minova.ClientApi
         private void _loadRepositoriesList()
         {
             Repositories.Clear();
-            Repositories.AddRange(File.ReadAllLines(MinovaRepositoriesListFilePath));
+            Repositories.AddRange(File.ReadAllLines(CraftitudeRepositoriesListFilePath));
         }
 
         private void _saveRepositoriesList()
         {
-            File.WriteAllLines(MinovaRepositoriesListFilePath, Repositories);
+            File.WriteAllLines(CraftitudeRepositoriesListFilePath, Repositories);
         }
 
         public void Save()
@@ -70,6 +70,6 @@ namespace Minova.ClientApi
             _saveRepositoriesList();
         }
 
-        #endregion Methods of MinovaClient (4)
+        #endregion Methods of CraftitudeClient (4)
     }
 }
