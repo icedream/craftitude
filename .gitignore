@@ -75,6 +75,9 @@ DocProject/Help/html
 # Click-Once directory
 publish
 
+# Dependencies repository (must be generated automatically by bootstrap script)
+dependencies
+
 # Publish Web Output
 *.Publish.xml
 
