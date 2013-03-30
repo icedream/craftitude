@@ -42,7 +42,7 @@ namespace Craftitude.ClientApi
 
         #endregion Constructors of Distribution (1)
 
-        #region Methods of Distribution (2)
+        #region Methods of Distribution (4)
 
         public DistributionPackageList GetAvailablePackages(string since)
         {
@@ -78,7 +78,7 @@ namespace Craftitude.ClientApi
             return new Uri(DistributionUrl, relativePath);
         }
 
-        #endregion Methods of Distribution (2)
+        #endregion Methods of Distribution (4)
     }
 
     public class DistributionPackageList : List<DistributionPackageListEntry>
