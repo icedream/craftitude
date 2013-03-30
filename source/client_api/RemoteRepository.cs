@@ -46,7 +46,12 @@ namespace Craftitude.ClientApi
 
         public DistributionPackageList GetAvailablePackages(string since)
         {
-            HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(GetUri("packages.yml?since=" + since));
+            Uri uri;
+            if (!string.IsNullOrEmpty(since))
+                uri = GetUri("packages.yml?since=" + since);
+            else
+                uri = GetUri("packages.yml");
+            HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(uri);
             var wresp = wr.GetResponse();
             DistributionPackageList ret = null;
             using (var ws = wresp.GetResponseStream())
@@ -56,6 +61,16 @@ namespace Craftitude.ClientApi
                 entry.Distribution = this;
 
             return ret;
+        }
+
+        public DistributionPackageList GetAvailablePackages(DateTime since)
+        {
+            return GetAvailablePackages(since.ToString("s"));
+        }
+
+        public DistributionPackageList GetAvailablePackages()
+        {
+            return GetAvailablePackages(null);
         }
 
         internal Uri GetUri(string relativePath)
