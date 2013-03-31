@@ -1,5 +1,5 @@
 ﻿# Craftitude Repository Documentation
-Gist Draft *Mar 31 2013, Version 0.3a*
+Gist Draft *Mar 31 2013, Version 0.3b*
 by Icedream (Carl Kittelberger)
 
 Filesystem Tree
@@ -141,10 +141,6 @@ package to install or uninstall it by giving it instructions. Those instructions
 are given in form of a LUA script. Following functions are available besides the
 basic LUA features available in each standard LUA script:
 
-- SetMetaInfIgnore(value):
-	Manipulates behaviour for META-INF data in JAR source archives. <value> can
-	be true or false, where true forces META-INF data to be handles as normal
-	directories/files and false forces META-INF data to be completely ignored.
 - UnpackAllFromSource(targetdir):
 	Unpacks all files from the source archive into <targetdir>.
 - UnpackAllFromSource(targetdir, filter):
