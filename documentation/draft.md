@@ -1,5 +1,5 @@
 ﻿# Craftitude Repository Documentation
-Gist Draft *Mar 28 2013, Version 0.2e*
+Gist Draft *Mar 31 2013, Version 0.3a*
 by Icedream (Carl Kittelberger)
 
 Filesystem Tree
@@ -18,27 +18,19 @@ Filesystem Tree
 				[DIR] <version>
 					[FILE] metadata.yml
 					[DIR] <platform: windows/macosx/solaris/linux>
-						[FILE] install
-						[FILE] uninstall
-						[FILE] source
+						[FILE] instructions
 				[DIR] <version>
 					[FILE] metadata.yml
 					[DIR] <platform>
-						[FILE] install
-						[FILE] uninstall
-						[FILE] source
+						[FILE] instructions
 				...
 			[DIR] <platform-independent package name>
 				[DIR] <version>
 					[FILE] metadata.yml
-					[FILE] install
-					[FILE] uninstall
-					[FILE] source
+					[FILE] instructions
 				[DIR] <version>
 					[FILE] metadata.yml
-					[FILE] install
-					[FILE] uninstall
-					[FILE] source
+					[FILE] instructions
 				...
 			...
 	...
@@ -141,57 +133,86 @@ License: GNU General Public License Version 3; http://opensource.org/licenses/GP
 PlatformDependency: False
 ```
 
-Package Install (``install``) / Uninstall (``uninstall``) Instruction files
-===========================================================================
+Package Instruction file (``instructions``)
+============================================
 
-PII/PUI files tell the client how to handle the contents of a package to in-
-stall or uninstall it by giving it instructions. Those instructions are given
-in form of a LUA script. Following functions are available besides the basic
-LUA features available in each standard LUA script:
+Package Instruction files tell the client how to handle the contents of a
+package to install or uninstall it by giving it instructions. Those instructions
+are given in form of a LUA script. Following functions are available besides the
+basic LUA features available in each standard LUA script:
 
-- SetMetaInfIgnore(value)
-  Manipulates behaviour for META-INF data in JAR source archives. <value> can
+- SetMetaInfIgnore(value):
+	Manipulates behaviour for META-INF data in JAR source archives. <value> can
 	be true or false, where true forces META-INF data to be handles as normal
 	directories/files and false forces META-INF data to be completely ignored.
-- UnpackAllFromSource(targetdir)
+- UnpackAllFromSource(targetdir):
 	Unpacks all files from the source archive into <targetdir>.
-- UnpackAllFromSource(targetdir, filter)
+- UnpackAllFromSource(targetdir, filter):
 	Unpacks all files from the source archive matching the file filter into
 	<targetdir>. The filter has the same form as the glob() function in PHP.
-	Example: "*.*" for all files or "*.class" for only files which end with
-	  ".class".
-- InjectAllFromSource(targetfile)
+	Example:
+		"*.*" for all files or "*.class" for only files which end with ".class".
+- InjectAllFromSource(targetfile):
 	Injects all files from the source archive into the archive at <targetfile>.
-- InjectAllFromSource(targetfile, filter)
+- InjectAllFromSource(targetfile, filter):
 	Injects all files from the source archive matching the glob filter into the
 	archive at <targetfile>.
-- DeleteFile(targetfile)
+- DeleteFile(targetfile):
 	Deletes <targetfile>.
-- DeleteDir(targetdir)
+- DeleteDir(targetdir):
 	Deletes <targetdir> and all its subdirectories.
-- Move(source, target)
+- Move(source, target):
 	Moves a directory or a file from <source> to <target>. Can be also used
 	as an explicit absolute path rename.
-- Rename [not implemented yet]
-- GetPackageMetadata(propertyname)
+- Rename(source, target):
+	Alias to Move(...).
+- GetPackageMetadata(propertyname):
 	Gets the currently processed package's version's metadata property
 	<propertyname>'s value. The return type is the same one served by the YAML
 	data of the package metadata.
-- GetPackageVersion()
+- GetPackageVersion():
 	Gets the currently processed package's version.
-- GetBaseDir() [obsolete]
-	Gets the base target directory into which the client installs all files.
+- GetResolver(resolvername[, parameters]):
+	Fetches a resolver by its name.
 
-Simple example of a typical fully working install instruction:
+All resolvers will have these functions:
+- ResolveToStream()
+	Resolves to a stream.
+- ResolveToArchive()
+	Resolves to an archive, this is usally the function you want to call with the last resolver.
+- ResolveToString()
+	Resolves to a text.
+
+[Resolver documentation following soon.]
+
+Simple example of a typical fully working instruction set.
 
 ```lua
-UnpackAllFromSource("my_mod_folder") -- unpack all source files into "<basedir>\my_mod_folder\"
-```
+function Install()
+	-- unpack all source files into "<basedir>\my_mod_folder\"
+	UnpackAllFromSource("my_mod_folder")
+end
 
-Simple example of a typical fully working uninstall instruction:
+function Uninstall()
+	-- delete all folders from the "<basedir>\my_mod_folder\"
+	DeleteFolder("my_mod_folder")
+end
 
-```lua
-DeleteFolder("my_mod_folder") -- delete all folders from the "<basedir>\my_mod_folder\"
+function Source()
+	-- Download the mod's jar file from a website
+	-- and resolve it to a stream for the ZIP resolver
+	local a = GetResolver("download", {
+		url = "http://somesite.com/downloads/mod.jar"
+	}):ResolveToStream()
+
+	-- Resolve it to an archive
+	local b = GetResolver("zip", {
+		input = a
+	}):ResolveToArchive()
+
+	-- Return the ready-to-use resolved file
+	return b
+end
 ```
 
 Security measurements:
