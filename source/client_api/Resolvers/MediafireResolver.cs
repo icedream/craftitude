@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace Craftitude.ClientApi.Resolvers
 {
@@ -47,7 +46,6 @@ namespace Craftitude.ClientApi.Resolvers
                 sw.WriteLine();
                 sw.Flush();
                 var status = sr.ReadLine().Trim();
-                Log.InfoFormat("Server returned status: {0}", status);
                 if (!new[] { "200", "301", "302", "303" }.Contains(status.Split(' ')[1]))
                     throw new WebException("HTTP error: " + status);
                 string line = "";

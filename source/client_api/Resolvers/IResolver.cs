@@ -5,15 +5,19 @@ using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 
-namespace Craftitude.ClientApi.Resolvers
+namespace Craftitude.ClientApi
 {
-    interface IResolver
+    using Archives;
+
+    namespace Resolvers
     {
-        string ResolveToString();
-        ArchiveBase ResolveToArchive();
-        MemoryMappedFile ResolveToMemoryMappedFile();
-        Stream ResolveToStream();
+        interface IResolver
+        {
+            string ResolveToString();
+            ArchiveBase ResolveToArchive();
+            MemoryMappedFile ResolveToMemoryMappedFile();
+            Stream ResolveToStream();
+        }
     }
 }

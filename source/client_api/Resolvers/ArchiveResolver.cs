@@ -17,14 +17,14 @@ namespace Craftitude.ClientApi
         {
             public override ArchiveBase ResolveToArchive()
             {
-                if (!this.Input.GetType().IsSubclassOf(typeof(Stream)))
+                if (!this.Parameters["Input"].GetType().IsSubclassOf(typeof(Stream)))
                     throw new InvalidOperationException();
 
                 string password = null;
                 if (Parameters.ContainsKey("password") && !string.IsNullOrEmpty(Parameters["password"].ToString()))
                     password = Parameters["password"].ToString();
 
-                var archive = new Archive(((Stream)this.Input), password);
+                var archive = new Archive(((Stream)this.Parameters["Input"]), password);
 
                 return archive;
             }

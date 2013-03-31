@@ -9,51 +9,54 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using YaTools.Yaml;
 
-namespace Craftitude.ClientApi.Resolvers
+namespace Craftitude.ClientApi
 {
-    public class ResolverBase : IResolver
+    using Archives;
+
+    namespace Resolvers
     {
-        private static string GetPlatformString()
+        public class ResolverBase : IResolver
         {
-            switch (Environment.OSVersion.Platform)
+            private static string GetPlatformString()
             {
-                case PlatformID.MacOSX:
-                    return "osx";
-                case PlatformID.Unix:
-                    return "linux";
-                case PlatformID.Xbox:
-                    return "xbox";
-                default:
-                    return "windows";
+                switch (Environment.OSVersion.Platform)
+                {
+                    case PlatformID.MacOSX:
+                        return "osx";
+                    case PlatformID.Unix:
+                        return "linux";
+                    case PlatformID.Xbox:
+                        return "xbox";
+                    default:
+                        return "windows";
+                }
             }
+
+            public virtual string ResolveToString()
+            {
+                throw new NotImplementedException();
+            }
+
+            public virtual ArchiveBase ResolveToArchive()
+            {
+                throw new NotImplementedException();
+            }
+
+            public virtual MemoryMappedFile ResolveToMemoryMappedFile()
+            {
+                throw new NotImplementedException();
+            }
+
+            public virtual Stream ResolveToStream()
+            {
+                throw new NotImplementedException();
+            }
+
+            public string Name
+            { get { return ((ResolverNameAttribute)GetType().GetCustomAttributes(typeof(ResolverNameAttribute), false).First()).Name; } }
+
+            public Hashtable Parameters
+            { get; set; }
         }
-
-        public object Input { get; set; }
-
-        public virtual string ResolveToString()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual ArchiveBase ResolveToArchive()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual MemoryMappedFile ResolveToMemoryMappedFile()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Stream ResolveToStream()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Name
-        { get { return ((ResolverNameAttribute)GetType().GetCustomAttributes(typeof(ResolverNameAttribute), false).First()).Name; } }
-
-        public Hashtable Parameters
-        { get; set; }
     }
 }
