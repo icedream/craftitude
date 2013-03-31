@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Imports (10)
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,8 +11,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+#endregion Imports (10)
+
 namespace Craftitude.ClientApi.Resolvers
 {
+
+
     [ResolverName("mediafire")]
     public class MediafireResolver : ResolverBase
     {

@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region Imports (7)
+
+using LuaInterface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using LuaInterface;
+
+#endregion Imports (7)
 
 namespace Craftitude.ClientApi
 {
@@ -13,37 +17,12 @@ namespace Craftitude.ClientApi
 
     class PackageInstructionsScript : Lua
     {
+        internal PackageMetadata _packageMetadata;
+        internal ArchiveBase _sourcePackage;
+
         public PackageInstructionsScript()
         {
 
-        }
-
-        internal ArchiveBase _sourcePackage;
-        internal PackageMetadata _packageMetadata;
-
-        private void UnpackAllFromSource(string targetdir)
-        {
-            _sourcePackage.ExtractAllFiles(targetdir);
-        }
-
-        private void UnpackAllFromSource(string targetdir, string filter)
-        {
-            // TODO: Implement UnpackAllFromSource with filter
-        }
-
-        private void InjectAllFromSource(string targetfile)
-        {
-            // TODO: Implement InjectAllFromSource
-        }
-
-        private void InjectAllFromSource(string targetfile, string filter)
-        {
-            // TODO: Implement UnpackAllFromSource with filter
-        }
-
-        private void DeleteFile(string targetfile)
-        {
-            // TODO: Implement DeleteFile
         }
 
         private void DeleteDir(string targetfile)
@@ -51,14 +30,9 @@ namespace Craftitude.ClientApi
             // TODO: Implement DeleteDir
         }
 
-        private void Move(string source, string target)
+        private void DeleteFile(string targetfile)
         {
-            // TODO: Implement Move
-        }
-
-        private void Rename(string source, string target)
-        {
-            Move(source, target);
+            // TODO: Implement DeleteFile
         }
 
         private object GetPackageMetadata(string propertyname)
@@ -82,6 +56,36 @@ namespace Craftitude.ClientApi
             var resolver = ResolverUtil.GetResolverByName(name);
             resolver.Parameters = parameters;
             return resolver;
+        }
+
+        private void InjectAllFromSource(string targetfile)
+        {
+            // TODO: Implement InjectAllFromSource
+        }
+
+        private void InjectAllFromSource(string targetfile, string filter)
+        {
+            // TODO: Implement UnpackAllFromSource with filter
+        }
+
+        private void Move(string source, string target)
+        {
+            // TODO: Implement Move
+        }
+
+        private void Rename(string source, string target)
+        {
+            Move(source, target);
+        }
+
+        private void UnpackAllFromSource(string targetdir)
+        {
+            _sourcePackage.ExtractAllFiles(targetdir);
+        }
+
+        private void UnpackAllFromSource(string targetdir, string filter)
+        {
+            // TODO: Implement UnpackAllFromSource with filter
         }
     }
 }

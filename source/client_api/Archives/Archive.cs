@@ -1,21 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Imports (15)
+
 using SharpCompress;
 using SharpCompress.Archive;
-using SharpCompress.Archive.SevenZip;
-using SharpCompress.Archive.Rar;
 using SharpCompress.Archive.GZip;
+using SharpCompress.Archive.Rar;
+using SharpCompress.Archive.SevenZip;
 using SharpCompress.Archive.Tar;
 using SharpCompress.Archive.Zip;
 using SharpCompress.Common;
 using SharpCompress.Common.Zip;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+#endregion Imports (15)
 
 namespace Craftitude.ClientApi.Archives
 {
+
+
     public class Archive : ArchiveBase
     {
         IArchive _arch;
@@ -54,30 +60,6 @@ namespace Craftitude.ClientApi.Archives
             }
         }
 
-        private IArchiveEntry GetEntry(string file)
-        {
-            //Console.WriteLine("GetEntry:fixme:{0}", file);
-            var fs = from entry in _arch.Entries
-                     where entry.FilePath.Replace('\\', '/').Equals(file, StringComparison.OrdinalIgnoreCase)
-                     select entry;
-            if (fs.Count() > 1)
-            {
-                Console.WriteLine("WARNING: {1} files found for {0} instead of a single. Using first entry.", file, fs.Count());
-                return fs.First();
-            }
-            else if (!fs.Any())
-                throw new InvalidOperationException();
-            else
-                return fs.First();
-        }
-
-        public override void ExtractFile(string file, string targetFilePath)
-        {
-            //using (var streamToWriteTo = File.Open(targetFilePath, FileMode.OpenOrCreate))
-            //    GetEntry(file).WriteTo(streamToWriteTo);
-            GetEntry(file).WriteToFile(targetFilePath, ExtractOptions.Overwrite);
-        }
-
         public override void ExtractAllFiles(string targetFolderPath)
         {
             var r = _arch.ExtractAllEntries();
@@ -97,6 +79,30 @@ namespace Craftitude.ClientApi.Archives
                         r.WriteEntryTo(streamToWriteTo);
                 }
             }
+        }
+
+        public override void ExtractFile(string file, string targetFilePath)
+        {
+            //using (var streamToWriteTo = File.Open(targetFilePath, FileMode.OpenOrCreate))
+            //    GetEntry(file).WriteTo(streamToWriteTo);
+            GetEntry(file).WriteToFile(targetFilePath, ExtractOptions.Overwrite);
+        }
+
+        private IArchiveEntry GetEntry(string file)
+        {
+            //Console.WriteLine("GetEntry:fixme:{0}", file);
+            var fs = from entry in _arch.Entries
+                     where entry.FilePath.Replace('\\', '/').Equals(file, StringComparison.OrdinalIgnoreCase)
+                     select entry;
+            if (fs.Count() > 1)
+            {
+                Console.WriteLine("WARNING: {1} files found for {0} instead of a single. Using first entry.", file, fs.Count());
+                return fs.First();
+            }
+            else if (!fs.Any())
+                throw new InvalidOperationException();
+            else
+                return fs.First();
         }
 
         public override string[] GetFileEntries()
