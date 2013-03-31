@@ -2,6 +2,7 @@
 
 using LuaInterface;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -53,12 +54,23 @@ namespace Craftitude.ClientApi
                 uri = GetUri("packages.yml");
             HttpWebRequest wr = (HttpWebRequest)HttpWebRequest.Create(uri);
             var wresp = wr.GetResponse();
-            DistributionPackageList ret = null;
+            Hashtable ht = null;
+            DistributionPackageList ret = new DistributionPackageList();
             using (var ws = wresp.GetResponseStream())
             using (var wsr = new StreamReader(ws))
-                ret = YamlLanguage.StringTo<DistributionPackageList>(wsr.ReadToEnd());
-            foreach (var entry in ret)
-                entry.Distribution = this;
+                ht = YamlLanguage.StringTo<Hashtable>(wsr.ReadToEnd());
+            foreach (string entryName in ht.Keys)
+            {
+                var entry = ht[entryName] as Hashtable;
+                ret.Add(new DistributionPackageListEntry() {
+                    CurrentVersion = entry["CurrentVersion"].ToString(),
+                    Distribution = this,
+                    Metadata = new PackageMetadata() {
+                        Data = entry["Metadata"] as Hashtable,
+                        ID = entryName
+                    }
+                });
+            }
 
             return ret;
         }
@@ -102,25 +114,27 @@ namespace Craftitude.ClientApi
     {
         #region Properties of PackageMetadata (10)
 
-        public string[] Dependencies { get; private set; }
+        public Hashtable Data { get; internal set; }
 
-        public string Description { get; private set; }
+        public string[] Dependencies { get { return (string[])Data["Dependencies"]; } }
 
-        public string[] Developers { get; private set; }
+        public string Description { get { return Data["Description"].ToString(); } }
+
+        public string[] Developers { get { return (string[])Data["Developers"]; } }
 
         public string ID { get; internal set; }
 
-        public string License { get; private set; }
+        public string License { get { return Data["License"].ToString(); } }
 
         public string LicenseNameOrText { get { return string.Join("; ", License.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries).Where(licenseEntry => !Uri.IsWellFormedUriString(licenseEntry, UriKind.Absolute))); } }
 
         public string LicenseUrl { get { return License.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries).SingleOrDefault(licenseEntry => Uri.IsWellFormedUriString(licenseEntry, UriKind.Absolute)); } }
 
-        public string[] Maintainers { get; private set; }
+        public string[] Maintainers { get { return (string[])Data["Maintainers"]; } }
 
-        public string Name { get; private set; }
+        public string Name { get { return Data["Name"].ToString(); } }
 
-        public bool PlatformDependence { get; private set; }
+        public bool PlatformDependence { get { return bool.Parse(Data["PlatformDependence"].ToString()); } }
 
         #endregion Properties of PackageMetadata (10)
     }
