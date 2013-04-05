@@ -32,12 +32,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpCompress">
+      <HintPath>..\packages\sharpcompress.0.8.2\lib\net40\SharpCompress.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\packages\System.Data.SQLite.1.0.84.0\lib\net40\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>..\packages\System.Data.SQLite.1.0.84.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Archives\Archive.cs" />
     <Compile Include="Archives\ArchiveBase.cs" />
+    <Compile Include="CacheFile.cs" />
     <Compile Include="CraftitudeClient.cs" />
     <Compile Include="PackageInstructionsScript.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,14 +65,21 @@
       <Project>{f55cabbb-4108-4a39-94e1-581fd46dc021}</Project>
       <Name>LuaInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\dependencies\sharpcompress\SharpCompress\SharpCompress.csproj">
-      <Project>{10a689cf-76a2-4a4f-96e4-553c33398438}</Project>
-      <Name>SharpCompress %28Dependencies\SharpCompress\SharpCompress%29</Name>
-    </ProjectReference>
     <ProjectReference Include="..\dependencies\yaml\Core\Core.Net4.csproj">
       <Project>{f9e90814-289a-4244-ab47-8acc29a03b07}</Project>
       <Name>Core.Net4</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
